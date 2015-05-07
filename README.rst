@@ -7,7 +7,7 @@ Form builder for Leonardo.
 
 Technicaly is only FeinCMS `Form Designer`_ and `Remote Forms`_.
 
-See `Demo Site`_
+Visit `Demo Site`_
 
 .. contents::
     :local:
@@ -42,7 +42,7 @@ Load new template to db
 
 See `Leonardo`_
 
-.. _`Demo Site`: https://demo.cms.robotice.cz
+.. _`Demo Site`: http://demo.cms.robotice.cz
 .. _`Leonardo`: https://github.com/django-leonardo/django-leonardo
 .. _`Form Designer`: https://github.com/antiflu/form_designer
 .. _`Remote Forms`: https://github.com/WiserTogether/django-remote-forms
