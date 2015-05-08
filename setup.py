@@ -1,3 +1,4 @@
+
 import setuptools
 
 # In python < 2.7.4, a lazy loading of package `pbr` will break
@@ -10,4 +11,6 @@ except ImportError:
 
 setuptools.setup(
     setup_requires=['pbr'],
-    pbr=True)
+    pbr=True,
+    dependency_links=[
+        'https://github.com/michaelkuty/pbr/tarball/master#egg=pbr'])
