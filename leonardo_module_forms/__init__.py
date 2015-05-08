@@ -13,10 +13,17 @@ class Default(object):
 
     @property
     def apps(self):
-        return [
+        INSTALLED_APPS = []
+        try:
+            import django_remote_forms # noqa
+        except ImportError:
+            pass
+        else:
+            INSTALLED_APPS += ['django_remote_forms']
+
+        return INSTALLED_APPS + [
             'crispy_forms',
             'form_designer',
-            'django_remote_forms',
             'leonardo_module_forms',
         ]
 

@@ -25,6 +25,14 @@ or as leonardo bundle
 
     pip install django-leonardo["forms"]
 
+Optionaly you can install remote forms typing this
+
+.. code-block:: bash
+
+    pip install leonardo_module_forms[remote]
+
+https://github.com/WiserTogether/django-remote-forms
+
 Add ``leonardo_module_forms`` to APPS list, in the ``local_settings.py``::
 
     APPS = [
