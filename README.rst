@@ -47,6 +47,30 @@ Load new template to db
 
     python manage.py sync_all
 
+Writing your own Layout
+-----------------------
+
+For customization is there two options.
+One is defining Crispy Layout as you can see below
+
+.. code-block:: python
+
+    Layout(
+        Fieldset(
+            'first arg is the legend of the fieldset',
+            'test',
+        ),
+        ButtonHolder(
+            Submit('submit', 'Submit', css_class='button white')
+        ),
+        HTML("""
+            <p>We use notes to get better, <strong>please help us {{ username }}</strong></p>
+        """),
+    )
+
+for full reference visit http://django-crispy-forms.readthedocs.org/en/latest/layouts.html
+
+Second is writing your custom template and render form field by field. For this is there template.
 
 See `Leonardo`_
 
