@@ -67,22 +67,19 @@ class FormWidget(Widget, FormContent):
 
             else:
                 # use default layout
-                form_instance.helper.layout = Layout(
-                    Fieldset(self.form.title),
-                    ButtonHolder(
-                        Submit('submit', 'Submit', css_class='button white')
+                if self.show_form_title:
+                    form_instance.helper.layout = Layout(
+                        Fieldset(self.form.title,
+                                 *form_instance.fields.keys()),
                     )
+                else:
+                    form_instance.helper.layout = Layout(
+                        *form_instance.fields.keys()
+                    )
+                form_instance.helper.layout.extend([ButtonHolder(
+                    Submit('submit', 'Submit', css_class='button white')
                 )
-                for field in form_instance.fields:
-                    form_instance.helper.layout[0].append(field)
-
-            # for comfort wrap all
-            try:
-                form_instance.helper.filter(
-                    basestring, max_level=4).wrap(
-                    Field, css_class="form-control")
-            except Exception as e:
-                raise e
+                ])
 
             context['form'] = form_instance
 
