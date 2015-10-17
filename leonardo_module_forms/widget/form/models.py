@@ -90,4 +90,4 @@ class FormWidget(Widget, FormContent):
 
             context['form'] = form_instance
 
-        return render_to_string(self.get_template_name, context)
+        return render_to_string(self.get_template_name(), context)
