@@ -69,22 +69,20 @@ class FormWidget(Widget, FormContent):
                 # use default layout
                 if self.show_form_title:
                     form_instance.helper.layout = Layout(
-                        Fieldset(self.form.title,
-                                 *form_instance.fields.keys()),
+                        Fieldset(self.form.title),
                     )
                 else:
-                    form_instance.helper.layout = Layout(
-                        *form_instance.fields.keys()
-                    )
+                    form_instance.helper.layout = Layout()
+
+                # Moving field labels into placeholders
+                layout = form_instance.helper.layout
+                for field_name, field in form_instance.fields.items():
+                    layout.append(Field(field_name, placeholder=field.label))
+
                 form_instance.helper.layout.extend([ButtonHolder(
                     Submit('submit', 'Submit', css_class='button white')
                 )
                 ])
-
-                # Moving field labels into placeholders
-                layout = form_instance.helper.layout = Layout()
-                for field_name, field in form_instance.fields.items():
-                    layout.append(Field(field_name, placeholder=field.label))
 
                 # still have choice to render field labels
                 if not self.show_form_title:
