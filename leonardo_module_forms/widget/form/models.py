@@ -81,6 +81,15 @@ class FormWidget(Widget, FormContent):
                 )
                 ])
 
+                # Moving field labels into placeholders
+                layout = form_instance.helper.layout = Layout()
+                for field_name, field in form_instance.fields.items():
+                    layout.append(Field(field_name, placeholder=field.label))
+
+                # still have choice to render field labels
+                if not self.show_form_title:
+                    form_instance.helper.form_show_labels = False
+
             context['form'] = form_instance
 
         return render_to_string(self.get_template_name, context)
