@@ -11,27 +11,15 @@ from django.utils.translation import ugettext_lazy as _
 from form_designer.models import FormContent
 from leonardo.module.web.models import Widget
 from leonardo.module.media.models import Folder, MEDIA_MODELS
+from leonardo.module.media.utils import handle_uploaded_file
 from django.conf import settings
 
 
-def handle_uploaded_file(f):
-    '''handle uploaded file
+def _handle_uploaded_file(f):
+    '''internal wrapper
     '''
-
-    folder, created = Folder.objects.get_or_create(
-        name=settings.FORM_FILES_DIRECTORY)
-
-    for cls in MEDIA_MODELS:
-        if cls.matches_file_type(f.name):
-
-            obj, created = cls.objects.get_or_create(
-                original_filename=f.name,
-                file=f,
-                folder=folder,
-                is_public=settings.FORM_FILES_PRIVATE)
-
-            if created:
-                return obj
+    return handle_uploaded_file(f, folder=settings.FORM_FILES_DIRECTORY,
+                                is_public=settings.FORM_FILES_PRIVATE)
 
 
 class FormWidget(Widget, FormContent):
@@ -55,7 +43,7 @@ class FormWidget(Widget, FormContent):
 
         files = []
         for key in request.FILES.keys():
-            saved_file = handle_uploaded_file(request.FILES[key])
+            saved_file = _handle_uploaded_file(request.FILES[key])
             _key = key.replace(self.prefix + '-', '')
             form_instance.cleaned_data[_key] = '%s - %s' % (
                 str(saved_file), saved_file.url)
