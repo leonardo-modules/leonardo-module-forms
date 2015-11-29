@@ -43,18 +43,17 @@ FIELD_TYPES = [
     )),
 ]
 
-# Add recaptcha field if available
-if 'captcha' in settings.INSTALLED_APPS:
-    try:
-        from captcha.fields import ReCaptchaField
-    except ImportError:
-        pass
-    else:
-        FIELD_TYPES.append((
-            'recaptcha',
-            _('recaptcha'),
-            curry(
-                ReCaptchaField,
-                attrs={'theme': 'clean'},
-            ),
-        ))
+# we know that captcha is in the installed apps
+try:
+    from captcha.fields import ReCaptchaField
+except ImportError:
+    pass
+else:
+    FIELD_TYPES.append((
+        'recaptcha',
+        _('recaptcha'),
+        curry(
+            ReCaptchaField,
+            attrs={'theme': 'clean'},
+        ),
+    ))

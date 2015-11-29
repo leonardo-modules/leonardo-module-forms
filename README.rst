@@ -33,6 +33,12 @@ Optionaly you can install remote forms typing this
 
 https://github.com/WiserTogether/django-remote-forms
 
+and google recaptcha
+
+.. code-block:: bash
+
+    pip install leonardo_module_forms[recaptcha]
+
 Add ``leonardo_module_forms`` to APPS list, in the ``local_settings.py``::
 
     APPS = [
