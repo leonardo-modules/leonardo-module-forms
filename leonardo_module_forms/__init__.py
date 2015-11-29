@@ -49,8 +49,8 @@ class FormConfig(AppConfig):
     def ready(self):
 
         from form_designer import settings, models
-        settings.FORM_DESIGNER_FIELD_TYPES = 'leonardo_module_forms.fields.LEONARDO_FIELD_TYPES'
-        from .fields import LEONARDO_FIELD_TYPES
-        models.FIELD_TYPES = LEONARDO_FIELD_TYPES
+        settings.FORM_DESIGNER_FIELD_TYPES = 'leonardo_module_forms.fields.FIELD_TYPES'
+        from .fields import FIELD_TYPES
+        models.FIELD_TYPES = FIELD_TYPES
 
 default = Default()

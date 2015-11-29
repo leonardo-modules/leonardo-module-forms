@@ -86,6 +86,9 @@ class FormWidget(Widget, FormContent):
                         'message': self.success_message or process_result or u'',
                     }
                 )
+            else:
+                context["form"] = form_instance
+
         else:
             form_instance = form_class(prefix=self.prefix)
 
