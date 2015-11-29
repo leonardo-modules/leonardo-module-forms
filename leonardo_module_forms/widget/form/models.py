@@ -8,9 +8,18 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext
 from form_designer.models import FormContent
 from leonardo.module.web.models import Widget
+from leonardo.module.media.models import Folder, MEDIA_MODELS
+from leonardo.module.media.utils import handle_uploaded_file
+from django.conf import settings
+
+
+def _handle_uploaded_file(f):
+    '''internal wrapper
+    '''
+    return handle_uploaded_file(f, folder=settings.FORM_FILES_DIRECTORY,
+                                is_public=settings.FORM_FILES_PRIVATE)
 
 
 class FormWidget(Widget, FormContent):
@@ -29,21 +38,47 @@ class FormWidget(Widget, FormContent):
         """ Process form and return response (hook method). """
         return render_to_string(self.template, context)
 
+    def handle_files(self, form_instance, request):
+        '''handle files from request'''
+
+        files = []
+        for key in request.FILES.keys():
+            saved_file = _handle_uploaded_file(request.FILES[key])
+            _key = key.replace(self.prefix + '-', '')
+            form_instance.cleaned_data[_key] = '%s - %s' % (
+                str(saved_file), saved_file.url)
+            files.append(saved_file)
+        return files
+
+    @property
+    def prefix(self):
+        return 'fc%d' % self.id
+
     def render(self, request, **kwargs):
         context = RequestContext(
             request, {'widget': self})
 
         form_class = self.form.form()
 
-        prefix = 'fc%d' % self.id
         formcontent = request.POST.get('_formcontent')
 
         if request.method == 'POST' and (
                 not formcontent or formcontent == smart_text(self.id)):
-            form_instance = form_class(request.POST, prefix=prefix)
+            form_instance = form_class(
+                request.POST, request.FILES, prefix=self.prefix)
 
             if form_instance.is_valid():
+
+                # handle files
+                files = self.handle_files(form_instance, request)
+
                 process_result = self.form.process(form_instance, request)
+
+                # add reverse reference to files
+                for file in files:
+                    file.description = process_result['save_fs'].formatted_data
+                    file.save()
+
                 context = RequestContext(
                     request,
                     {
@@ -51,8 +86,11 @@ class FormWidget(Widget, FormContent):
                         'message': self.success_message or process_result or u'',
                     }
                 )
+            else:
+                context["form"] = form_instance
+
         else:
-            form_instance = form_class(prefix=prefix)
+            form_instance = form_class(prefix=self.prefix)
 
             # use crispy forms
             form_instance.helper = FormHelper(form_instance)
