@@ -76,7 +76,7 @@ class FormWidget(Widget, FormContent):
 
                 # add reverse reference to files
                 for file in files:
-                    file.description = process_result['save_fs'].formatted_data
+                    file.description = process_result['save_fs'].formatted_data()
                     file.save()
 
                 context = RequestContext(
