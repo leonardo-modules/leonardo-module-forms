@@ -15,12 +15,22 @@ class Default(object):
     @property
     def apps(self):
         INSTALLED_APPS = []
+
+        try:
+            import captcha # noqa
+        except ImportError:
+            pass
+        else:
+            INSTALLED_APPS += ['captcha']
+
+
         try:
             import django_remote_forms # noqa
         except ImportError:
             pass
         else:
             INSTALLED_APPS += ['django_remote_forms']
+
 
         return INSTALLED_APPS + [
             'crispy_forms',
@@ -34,10 +44,21 @@ class Default(object):
             FormWidget,
         ]
 
-    config = {
-        'FORM_FILES_PRIVATE': (True, 'Makes all uploaded files from forms as private'),
-        'FORM_FILES_DIRECTORY': ('form files', 'Upload all form files to this directory'),
-    }
+    @property
+    def config(self):
+        config = {
+            'FORM_FILES_PRIVATE': (True, 'Makes all uploaded files from forms as private'),
+            'FORM_FILES_DIRECTORY': ('form files', 'Upload all form files to this directory'),
+        }
+        try:
+            import captcha # noqa
+        except ImportError:
+            pass
+        else:
+            config["RECAPTCHA_PUBLIC_KEY"] = ("6LdUAxITAAAAAEXCbUS2OammlZaQv9G5sWmxN0CW", "Recaptcha Public Key")
+            config["RECAPTCHA_PRIVATE_KEY"] = ("6LdUAxITAAAAAI8oFJ6m5OkYwh_2FhsoBy040-uH", "Recaptcha Private Key")
+
+        return config
 
 
 class FormConfig(AppConfig):
