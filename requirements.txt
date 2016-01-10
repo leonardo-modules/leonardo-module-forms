@@ -1,1 +1,1 @@
-form-designer==0.7.0
+form-designer>=0.7.0
