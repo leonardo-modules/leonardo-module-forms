@@ -54,6 +54,39 @@ class FormWidget(Widget, FormContent):
     def prefix(self):
         return 'fc%d' % self.id
 
+    def get_complete_form(self, form_instance):
+
+        # use crispy forms
+        form_instance.helper = FormHelper(form_instance)
+        form_instance.helper.form_action = '#form{}'.format(self.id)
+
+        if self.form_layout:
+
+            try:
+                form_instance.helper.layout = eval(self.form_layout)
+            except Exception as e:
+                raise e
+
+        else:
+
+            form_instance.helper.layout = Layout()
+
+            # Moving field labels into placeholders
+            layout = form_instance.helper.layout
+            for field_name, field in form_instance.fields.items():
+                layout.append(Field(field_name, placeholder=field.label))
+
+            form_instance.helper.layout.extend([ButtonHolder(
+                Submit('submit', 'Submit', css_class='button white')
+            )
+            ])
+
+            # still have choice to render field labels
+            if not self.show_form_title:
+                form_instance.helper.form_show_labels = False
+
+        return form_instance
+
     def render(self, request, **kwargs):
         context = RequestContext(
             request, {'widget': self})
@@ -87,44 +120,12 @@ class FormWidget(Widget, FormContent):
                     }
                 )
             else:
+                form_instance = self.get_complete_form(form_instance)
                 context["form"] = form_instance
 
         else:
             form_instance = form_class(prefix=self.prefix)
-
-            # use crispy forms
-            form_instance.helper = FormHelper(form_instance)
-            form_instance.helper.form_action = '#form{}'.format(self.id)
-
-            if self.form_layout:
-
-                try:
-                    form_instance.helper.layout = eval(self.form_layout)
-                except Exception as e:
-                    raise e
-
-            else:
-                # use default layout
-                if self.show_form_title:
-                    form_instance.helper.layout = Layout(
-                        Fieldset(self.form.title),
-                    )
-                else:
-                    form_instance.helper.layout = Layout()
-
-                # Moving field labels into placeholders
-                layout = form_instance.helper.layout
-                for field_name, field in form_instance.fields.items():
-                    layout.append(Field(field_name, placeholder=field.label))
-
-                form_instance.helper.layout.extend([ButtonHolder(
-                    Submit('submit', 'Submit', css_class='button white')
-                )
-                ])
-
-                # still have choice to render field labels
-                if not self.show_form_title:
-                    form_instance.helper.form_show_labels = False
+            form_instance = self.get_complete_form(form_instance)
 
             context['form'] = form_instance
 
