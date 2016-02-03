@@ -5,7 +5,7 @@
 
 {% block content %}
 {% if form %}
-<div id="form-{{ form.id }}" class="{{ widget.formclass }}">
+<div id="form{{ widget.id }}" class="{{ widget.formclass }}">
 {% crispy form %}
 </div>
 {% else %}
