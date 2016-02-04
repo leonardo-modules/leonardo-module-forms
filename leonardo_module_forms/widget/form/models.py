@@ -3,6 +3,8 @@
 from crispy_forms.bootstrap import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
+from django import forms
+from django.conf import settings
 from django.db import models
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -10,16 +12,16 @@ from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
 from form_designer.models import FormContent
 from leonardo.module.web.models import Widget
-from leonardo.module.media.models import Folder, MEDIA_MODELS
+
+# do not import this before widget
 from leonardo.module.media.utils import handle_uploaded_file
-from django.conf import settings
 
 
-def _handle_uploaded_file(f):
-    '''internal wrapper
+def _handle_uploaded_file(f, private=None, folder_name=None):
+    '''save upladed file
     '''
-    return handle_uploaded_file(f, folder=settings.FORM_FILES_DIRECTORY,
-                                is_public=settings.FORM_FILES_PRIVATE)
+    return handle_uploaded_file(f, folder=folder_name or settings.FORM_FILES_DIRECTORY,
+                                is_public=private or settings.FORM_FILES_PRIVATE)
 
 
 class FormWidget(Widget, FormContent):
@@ -42,8 +44,14 @@ class FormWidget(Widget, FormContent):
         '''handle files from request'''
 
         files = []
+
+        private = form_instance.cleaned_data.pop("private", None)
+        folder_name = form_instance.cleaned_data.pop("folder_name", None)
+
         for key in request.FILES.keys():
-            saved_file = _handle_uploaded_file(request.FILES[key])
+            saved_file = _handle_uploaded_file(request.FILES[key],
+                                               private=private,
+                                               folder_name=folder_name)
             _key = key.replace(self.prefix + '-', '')
             form_instance.cleaned_data[_key] = '%s - %s' % (
                 str(saved_file), saved_file.url)
@@ -93,10 +101,9 @@ class FormWidget(Widget, FormContent):
 
         form_class = self.form.form()
 
-        formcontent = request.POST.get('_formcontent')
+        formcontent = request.POST.get(self.prefix + '-_formcontent')
 
-        if request.method == 'POST' and (
-                not formcontent or formcontent == smart_text(self.id)):
+        if request.method == 'POST' and formcontent == smart_text(self.id):
             form_instance = form_class(
                 request.POST, request.FILES, prefix=self.prefix)
 
@@ -128,5 +135,11 @@ class FormWidget(Widget, FormContent):
             form_instance = self.get_complete_form(form_instance)
 
             context['form'] = form_instance
+
+        # append hidden field for check unique
+        if "form" in context:
+            context['form'].fields["_formcontent"] = forms.CharField(
+                initial=self.id, widget=forms.widgets.HiddenInput)
+            context['form'].helper.layout.append("_formcontent")
 
         return render_to_string(self.get_template_name(), context)
