@@ -4,11 +4,11 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-{% if form %}
 <div id="form{{ widget.id }}" class="{{ widget.formclass }}">
+{% if form %}
 {% crispy form %}
-</div>
 {% else %}
 {{ message|safe }}
 {% endif %}
+</div>
 {% endblock %}
