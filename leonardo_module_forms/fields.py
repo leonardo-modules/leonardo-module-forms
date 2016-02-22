@@ -10,7 +10,10 @@ FIELD_TYPES = [
     ('integer', _('integer'), forms.IntegerField),
     ('boolan', _('boolan True / False'), forms.BooleanField),
     ('float', _('float'), forms.FloatField),
-    ('date', _('Date'), forms.DateField),
+    ('date', _('Date'), curry(
+        forms.DateField,
+        widget=forms.DateTimeInput(
+            attrs={'data-provide': "datepicker"}))),
     ('longtext', _('long text'), curry(
         forms.CharField,
         widget=forms.Textarea,
