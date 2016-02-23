@@ -5,16 +5,18 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
 from django import forms
 from django.conf import settings
+from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
 from form_designer.models import FormContent
-from leonardo.module.web.models import Widget
-
 # do not import this before widget
 from leonardo.module.media.utils import handle_uploaded_file
+from leonardo.module.web.models import Widget
+
+from .forms import FormWidgetForm
 
 
 def _handle_uploaded_file(f, private=None, folder_name=None):
@@ -25,6 +27,8 @@ def _handle_uploaded_file(f, private=None, folder_name=None):
 
 
 class FormWidget(Widget, FormContent):
+
+    feincms_item_editor_form = FormWidgetForm
 
     form_layout = models.TextField(
         _('Form Layout'), blank=True, null=True,
@@ -116,7 +120,8 @@ class FormWidget(Widget, FormContent):
 
                 # add reverse reference to files
                 for file in files:
-                    file.description = process_result['save_fs'].formatted_data()
+                    file.description = process_result[
+                        'save_fs'].formatted_data()
                     file.save()
 
                 context = RequestContext(
