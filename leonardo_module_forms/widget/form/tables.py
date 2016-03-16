@@ -61,6 +61,12 @@ class FormFieldsTable(FormsetDataTable):
     name = tables.Column('name')
     title = tables.Column('title')
     type = tables.Column('type', verbose_name=_('Type'))
+    choices = tables.Column('choices', verbose_name=_('Type'),
+                            help_text=_('Comma-separated'))
+    help_text = tables.Column('help_text', verbose_name=_('Help Text'))
+    default_value = tables.Column('default_value',
+                                  verbose_name=_('Default Value'))
+    is_required = tables.Column('is_required', verbose_name=_('Is required ?'))
 
     name = 'fields'
 

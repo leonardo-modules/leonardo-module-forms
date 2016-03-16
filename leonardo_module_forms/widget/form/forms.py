@@ -15,7 +15,7 @@ from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
 from form_designer.models import Form, FormField
 from horizon_contrib.forms import SelfHandlingModelForm
-from leonardo.forms import DynamicModelChoiceField
+from leonardo.forms.fields.dynamic import DynamicModelChoiceField
 import copy
 from leonardo.module.web.widgets.forms import WidgetUpdateForm
 from .tables import FormFieldsFormset
