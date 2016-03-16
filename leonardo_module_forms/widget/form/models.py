@@ -5,7 +5,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
 from django import forms
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -15,6 +14,8 @@ from form_designer.models import FormContent
 # do not import this before widget
 from leonardo.module.media.utils import handle_uploaded_file
 from leonardo.module.web.models import Widget
+from leonardo_module_forms.signals import \
+    process_valid_form as process_valid_form_signal
 
 from .forms import FormWidgetForm
 
@@ -42,7 +43,12 @@ class FormWidget(Widget, FormContent):
 
     def process_valid_form(self, request, form_instance, **kwargs):
         """ Process form and return response (hook method). """
-        return render_to_string(self.template, context)
+
+        process_valid_form_signal.send(
+            sender=self.__class__,
+            widget=self,
+            form_instance=form_instance,
+            request=request)
 
     def handle_files(self, form_instance, request):
         '''handle files from request'''
@@ -117,6 +123,9 @@ class FormWidget(Widget, FormContent):
                 files = self.handle_files(form_instance, request)
 
                 process_result = self.form.process(form_instance, request)
+
+                self.process_valid_form(
+                    request, form_instance, **kwargs)
 
                 # add reverse reference to files
                 for file in files:
