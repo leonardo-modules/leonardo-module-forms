@@ -1,8 +1,5 @@
 
 from django.apps import AppConfig
-from django.utils.translation import ugettext_lazy as _
-
-from .widget import *
 
 
 default_app_config = 'leonardo_module_forms.FormConfig'
@@ -17,20 +14,18 @@ class Default(object):
         INSTALLED_APPS = []
 
         try:
-            import captcha # noqa
+            import captcha  # noqa
         except ImportError:
             pass
         else:
             INSTALLED_APPS += ['captcha']
 
-
         try:
-            import django_remote_forms # noqa
+            import django_remote_forms  # noqa
         except ImportError:
             pass
         else:
             INSTALLED_APPS += ['django_remote_forms']
-
 
         return INSTALLED_APPS + [
             'crispy_forms',
@@ -41,7 +36,7 @@ class Default(object):
     @property
     def widgets(self):
         return [
-            FormWidget,
+            'leonardo_module_forms.models.FormWidget',
         ]
 
     @property
@@ -51,12 +46,14 @@ class Default(object):
             'FORM_FILES_DIRECTORY': ('form files', 'Upload all form files to this directory'),
         }
         try:
-            import captcha # noqa
+            import captcha  # noqa
         except ImportError:
             pass
         else:
-            config["RECAPTCHA_PUBLIC_KEY"] = ("6LdUAxITAAAAAEXCbUS2OammlZaQv9G5sWmxN0CW", "Recaptcha Public Key")
-            config["RECAPTCHA_PRIVATE_KEY"] = ("6LdUAxITAAAAAI8oFJ6m5OkYwh_2FhsoBy040-uH", "Recaptcha Private Key")
+            config["RECAPTCHA_PUBLIC_KEY"] = (
+                "6LdUAxITAAAAAEXCbUS2OammlZaQv9G5sWmxN0CW", "Recaptcha Public Key")
+            config["RECAPTCHA_PRIVATE_KEY"] = (
+                "6LdUAxITAAAAAI8oFJ6m5OkYwh_2FhsoBy040-uH", "Recaptcha Private Key")
 
         return config
 
