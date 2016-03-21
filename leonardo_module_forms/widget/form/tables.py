@@ -41,7 +41,7 @@ class FormFieldsTable(FormsetDataTable):
         Use this to validate the formset and to get the submitted data back.
         """
         if self.form:
-            queryset = self.form.fields
+            queryset = self.form.fields.all()
         else:
             queryset = FormField.objects.none()
         if self._formset is None:

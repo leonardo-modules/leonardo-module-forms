@@ -1,5 +1,7 @@
 # -#- coding: utf-8 -#-
 
+import copy
+
 from crispy_forms.bootstrap import *
 from crispy_forms.bootstrap import Tab, TabHolder
 from crispy_forms.helper import FormHelper
@@ -16,8 +18,9 @@ from django.utils.translation import ugettext_lazy as _
 from form_designer.models import Form, FormField
 from horizon_contrib.forms import SelfHandlingModelForm
 from leonardo.forms.fields.dynamic import DynamicModelChoiceField
-import copy
+from leonardo.module.media.fields import FileField
 from leonardo.module.web.widgets.forms import WidgetUpdateForm
+
 from .tables import FormFieldsFormset
 
 
@@ -48,7 +51,7 @@ class FormForm(SelfHandlingModelForm):
                 form = None
                 data = []
             else:
-                data = form.fields
+                data = form.fields.all()
 
             dimensions = Tab(_('Fields'),
                              HTML(
@@ -96,6 +99,10 @@ class FormWidgetForm(WidgetUpdateForm):
         search_fields=[
             'title__icontains',
         ],
-        add_item_link=reverse_lazy('forms:create_with_form',
-                                   kwargs={'cls_name': 'form_designer.form',
-                                           'form_cls': 'leonardo_module_forms.widget.form.forms.FormForm'}))
+        cls_name='form_designer.form',
+        form_cls='leonardo_module_forms.widget.form.forms.FormForm')
+
+    file = FileField(
+        help_text=_("Type to search file or upload new one."),
+        cls_name='media.file',
+        form_cls='leonardo.module.media.admin.fileadmin.FileAdminChangeFrom')

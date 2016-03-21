@@ -9,6 +9,9 @@
 {% crispy form %}
 {% else %}
 {{ message|safe }}
+{% if widget.file %}
+<a href="{{ widget.file.file.url }}" target="_blank" class="btn btn-primary">{% trans "Download" %}</a>
+{% endif %}
 {% endif %}
 </div>
 {% endblock %}
