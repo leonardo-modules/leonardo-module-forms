@@ -37,6 +37,7 @@ class Default(object):
     def widgets(self):
         return [
             'leonardo_module_forms.models.FormWidget',
+            'leonardo_module_forms.models.DownloadFormWidget',
         ]
 
     @property
