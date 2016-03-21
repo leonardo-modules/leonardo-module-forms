@@ -1,5 +1,5 @@
 
-import floppyforms as forms
+from django import forms
 from django.forms.models import modelformset_factory
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
@@ -8,6 +8,8 @@ from form_designer.models import FormField
 
 
 class FormFieldsForm(forms.ModelForm):
+
+    id = forms.IntegerField('id', widget=forms.widgets.HiddenInput)
 
     class Meta:
         model = FormField
@@ -57,6 +59,7 @@ class FormFieldsTable(FormsetDataTable):
         self.form = kwargs.pop('form', None)
         super(FormFieldsTable, self).__init__(*args, **kwargs)
 
+    id = tables.Column('id', hidden=True)
     form = tables.Column('form', hidden=True)
     name = tables.Column('name')
     title = tables.Column('title')

@@ -115,9 +115,8 @@ class FormWidget(Widget, FormContent):
 
         return form_instance
 
-    def render(self, request, **kwargs):
-        context = RequestContext(
-            request, {'widget': self})
+    def get_template_data(self, request):
+        context = {}
 
         form_class = self.form.form()
 
@@ -166,4 +165,4 @@ class FormWidget(Widget, FormContent):
                 initial=self.id, widget=forms.widgets.HiddenInput)
             context['form'].helper.layout.append("_formcontent")
 
-        return render_to_string(self.get_template_name(), context)
+        return context
