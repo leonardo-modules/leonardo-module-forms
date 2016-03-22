@@ -36,16 +36,6 @@ class FormWidget(Widget, FormContent):
         help_text=_('Crispy Form Layout see \
             http://django-crispy-forms.readthedocs.org/en/latest/layouts.html'))
 
-    file = models.ForeignKey(
-        "media.File",
-        verbose_name=_("file"),
-        related_name="%(app_label)s_%(class)s_files",
-        null=True,
-        blank=True,
-        help_text=_('This file will be available for download'
-                    'after form is submited')
-    )
-
     class Meta:
         abstract = True
         verbose_name = _('form')
