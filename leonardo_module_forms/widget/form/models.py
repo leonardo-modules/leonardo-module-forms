@@ -124,7 +124,7 @@ class FormWidget(Widget, FormContent):
                 process_result = self.form.process(form_instance, request)
 
                 self.process_valid_form(
-                    request, form_instance, **kwargs)
+                    request, form_instance)
 
                 # add reverse reference to files
                 for file in files:
