@@ -104,6 +104,4 @@ class FormWidgetForm(WidgetUpdateForm):
         form_cls='leonardo_module_forms.widget.form.forms.FormForm')
 
     file = FileField(
-        help_text=_("Type to search file or upload new one."),
-        cls_name='media.file',
-        form_cls='leonardo.module.media.admin.fileadmin.FileAdminChangeFrom')
+        help_text=_("Type to search file or upload new one."))
