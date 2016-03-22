@@ -132,13 +132,8 @@ class FormWidget(Widget, FormContent):
                         'save_fs'].formatted_data()
                     file.save()
 
-                context = RequestContext(
-                    request,
-                    {
-                        'widget': self,
-                        'message': self.success_message or process_result or u'',
-                    }
-                )
+                context['message'] = self.success_message or process_result or u''
+
             else:
                 form_instance = self.get_complete_form(form_instance)
                 context["form"] = form_instance
