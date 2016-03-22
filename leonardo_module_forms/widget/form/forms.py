@@ -102,6 +102,3 @@ class FormWidgetForm(WidgetUpdateForm):
         ],
         cls_name='form_designer.form',
         form_cls='leonardo_module_forms.widget.form.forms.FormForm')
-
-    file = FileField(
-        help_text=_("Type to search file or upload new one."))
