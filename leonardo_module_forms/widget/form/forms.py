@@ -102,3 +102,10 @@ class FormWidgetForm(WidgetUpdateForm):
         ],
         cls_name='form_designer.form',
         form_cls='leonardo_module_forms.widget.form.forms.FormForm')
+
+    tabs = {
+        'advanced': {
+            'name': 'Advanced',
+            'fields': ('form_layout', 'show_form_title')
+        }
+    }
