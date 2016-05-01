@@ -95,7 +95,7 @@ class FormWidget(Widget, FormContent):
                 layout.append(Field(field_name, placeholder=field.label))
 
             form_instance.helper.layout.extend([ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
+                Submit('submit', _('Submit'), css_class='button white')
             )
             ])
 
