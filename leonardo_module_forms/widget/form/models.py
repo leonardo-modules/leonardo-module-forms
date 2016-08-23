@@ -10,7 +10,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _
-from form_designer.models import FormContent
+from form_designer.contents import FormContent
 # do not import this before widget
 from leonardo.module.media.utils import handle_uploaded_file
 from leonardo.module.web.models import Widget
@@ -33,8 +33,8 @@ class FormWidget(Widget, FormContent):
 
     form_layout = models.TextField(
         _('Form Layout'), blank=True, null=True,
-        help_text=_('Crispy Form Layout see \
-            http://django-crispy-forms.readthedocs.org/en/latest/layouts.html'))
+        help_text=_('Crispy Form Layout see '
+            'http://django-crispy-forms.readthedocs.org/en/latest/layouts.html'))
 
     class Meta:
         abstract = True
