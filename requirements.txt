@@ -1,1 +1,1 @@
--e git+https://github.com/feincms/form_designer.git#egg=form_designer
+form_designer==0.8.2
