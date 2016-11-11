@@ -1,1 +1,1 @@
-form_designer==0.8.2
+form_designer>=0.9.0
