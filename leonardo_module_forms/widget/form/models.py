@@ -16,7 +16,7 @@ from leonardo.module.media.utils import handle_uploaded_file
 from leonardo.module.web.models import Widget
 from leonardo_module_forms.signals import \
     process_valid_form as process_valid_form_signal
-
+from leonardo import messages
 from .forms import FormWidgetForm
 
 
@@ -34,7 +34,7 @@ class FormWidget(Widget, FormContent):
     form_layout = models.TextField(
         _('Form Layout'), blank=True, null=True,
         help_text=_('Crispy Form Layout see '
-            'http://django-crispy-forms.readthedocs.org/en/latest/layouts.html'))
+                    'http://django-crispy-forms.readthedocs.org/en/latest/layouts.html'))
 
     class Meta:
         abstract = True
@@ -72,7 +72,7 @@ class FormWidget(Widget, FormContent):
     def prefix(self):
         return 'fc%d' % self.id
 
-    def get_complete_form(self, form_instance):
+    def get_complete_form(self, form_instance, request):
 
         # use crispy forms
         form_instance.helper = FormHelper(form_instance)
@@ -83,25 +83,31 @@ class FormWidget(Widget, FormContent):
             try:
                 form_instance.helper.layout = eval(self.form_layout)
             except Exception as e:
-                raise e
+                messages.error(request.user, "Error raised from"
+                               " your layout %s, "
+                               "fallback to the default layout " % str(e))
 
-        else:
+            else:
 
-            form_instance.helper.layout = Layout()
+                form_instance.helper.form_show_labels = self.show_form_title
 
-            # Moving field labels into placeholders
-            layout = form_instance.helper.layout
-            for field_name, field in form_instance.fields.items():
-                layout.append(Field(field_name, placeholder=field.label))
+                return form_instance
 
-            form_instance.helper.layout.extend([ButtonHolder(
-                Submit('submit', _('Submit'), css_class='button white')
-            )
-            ])
+        form_instance.helper.layout = Layout()
 
-            # still have choice to render field labels
-            if not self.show_form_title:
-                form_instance.helper.form_show_labels = False
+        # Moving field labels into placeholders
+        layout = form_instance.helper.layout
+        for field_name, field in form_instance.fields.items():
+            layout.append(Field(field_name, placeholder=field.label))
+
+        form_instance.helper.layout.extend([ButtonHolder(
+            Submit('submit', _('Submit'), css_class='button white')
+        )
+        ])
+
+        # still have choice to render field labels
+        if not self.show_form_title:
+            form_instance.helper.form_show_labels = False
 
         return form_instance
 
@@ -132,15 +138,16 @@ class FormWidget(Widget, FormContent):
                         'save_fs'].formatted_data()
                     file.save()
 
-                context['message'] = self.success_message or process_result or u''
+                context[
+                    'message'] = self.success_message or process_result or u''
 
             else:
-                form_instance = self.get_complete_form(form_instance)
+                form_instance = self.get_complete_form(form_instance, request)
                 context["form"] = form_instance
 
         else:
             form_instance = form_class(prefix=self.prefix)
-            form_instance = self.get_complete_form(form_instance)
+            form_instance = self.get_complete_form(form_instance, request)
 
             context['form'] = form_instance
 
